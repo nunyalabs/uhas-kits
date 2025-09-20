@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>UHAS-HPI Hypertension Study</title>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet" />
+	<link rel="manifest" href="manifest.json" />
+        <link rel="apple-touch-icon" href="assets/kits-icon.svg" />
+        <link rel="icon" href="assets/kits-icon.svg" />
+	<meta name="theme-color" content="#764ba2">
+        <style>
+                :root {
+                        --bg-start: #6a11cb;
+                        --bg-end: #2575fc;
+                        --accent-color: #6a11cb;
+                }
+                body { 
+                        min-height: 100vh; 
+                        background: linear-gradient(135deg, var(--bg-start), var(--bg-end)); 
+                        margin: 0;
+                        padding: 0;
+                        display: flex;
+                        flex-direction: column;
+                }
+                .header-section {
+                        padding: 2rem 0;
+                        text-align: center;
+                }
+                .logo-strip {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 1.5rem;
+                        margin-bottom: 1.5rem;
+                        flex-wrap: wrap;
+                }
+                .logo-strip img {
+                        height: 50px;
+                        object-fit: contain;
+                        transition: transform .2s ease;
+                }
+                .logo-strip img:hover {
+                        transform: scale(1.1);
+                }
+                .brand-title { 
+                        color: #fff; 
+                        font-weight: 700;
+                        margin-bottom: 0.5rem;
+                }
+                .brand-sub { 
+                        color: rgba(255,255,255,.8); 
+                }
+                .main-content {
+                        flex: 1;
+                        display: flex;
+                        align-items: stretch;
+                }
+                .hero-section {
+                        flex: 1;
+                        background: url('assets/hero.jpg') no-repeat center center;
+                        background-size: cover;
+                        min-height: 60vh;
+                        position: relative;
+                }
+                .hero-section::before {
+                        content: '';
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: rgba(0,0,0,0.3);
+                }
+                .toolkit-section {
+                        flex: 1;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 3rem;
+                }
+                .glassy { 
+                        backdrop-filter: blur(10px); 
+                        background: rgba(255,255,255,0.08); 
+                        border: 1px solid rgba(255,255,255,0.15); 
+                        border-radius: 16px; 
+                }
+                .card-link { 
+                        text-decoration: none; 
+                        color: inherit; 
+                }
+                .app-card { 
+                        transition: transform .15s ease, box-shadow .15s ease; 
+                        height: 200px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                }
+                .app-card:hover { 
+                        transform: translateY(-2px); 
+                        box-shadow: 0 10px 30px rgba(0,0,0,.25); 
+                }
+                .app-card .icon {
+                        font-size: 3rem;
+                        margin-bottom: 1rem;
+                }
+                .app-card .icon.icon-a { color: #ff6b6b; }
+                .app-card .icon.icon-b { color: #4ecdc4; }
+                .app-card h5 {
+                        color: #fff;
+                        margin-bottom: 0.5rem;
+                }
+                .app-card .small {
+                        color: rgba(255,255,255,0.7);
+                }
+                .footer {
+                        text-align: center;
+                        padding: 2rem;
+                        color: rgba(255,255,255,0.7);
+                }
+                
+                @media (max-width: 768px) {
+                        .main-content {
+                                flex-direction: column;
+                        }
+                        .hero-section {
+                                min-height: 40vh;
+                        }
+                        .toolkit-section {
+                                padding: 2rem 1rem;
+                        }
+                }
+        </style>
+</head>
+<body>
+        <!-- Header Section with Logos and Title -->
+        <div class="header-section">
+                <div class="container">
+                        <div class="logo-strip">
+                                <img src="assets/uhas.jpg" alt="UHAS Logo">
+                                <img src="assets/hpi.png" alt="HPI Logo">
+                                <img src="assets/ghs.jpg" alt="GHS Logo">
+                                <img src="assets/cpmr.png" alt="CPMR Logo">
+                                 <img src="assets/kits-icon.svg" alt="Kits Logo">
+                        </div>
+                        <h1 class="brand-title">UHAS-HPI Hypertension Study</h1>
+                        <p class="brand-sub">Digital Research Toolkits</p>
+                        <div class="dropdown d-inline-block mt-2">
+                                <button class="btn btn-outline-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                        <i class="bi bi-palette me-1"></i> Theme
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="#" data-theme="warm">Warm</a></li>
+                                        <li><a class="dropdown-item" href="#" data-theme="medium-sky">Medium Sky Blue</a></li>
+                                        <li><a class="dropdown-item" href="#" data-theme="deep-blue">Deep Blue</a></li>
+                                        <li><a class="dropdown-item" href="#" data-theme="cyan">Cyan Blue</a></li>
+                                        <li><a class="dropdown-item" href="#" data-theme="leaf-green">Leaf Green</a></li>
+                                        <li><hr class="dropdown-divider"/></li>
+                                        <li><a class="dropdown-item" href="#" data-mode="light">Light Mode</a></li>
+                                        <li><a class="dropdown-item" href="#" data-mode="dark">Dark Mode</a></li>
+                                </ul>
+                        </div>
+                </div>
+        </div>
+
+        <!-- Main Content: Hero Image (Left) + Toolkit Icons (Right) -->
+        <div class="main-content">
+                <div class="hero-section"></div>
+                <div class="toolkit-section">
+                        <div class="container">
+                                <div class="row g-4">
+                                        <div class="col-12 col-md-6">
+                                                <a class="card-link" href="toolkit-a/">
+                                                        <div class="glassy app-card p-4">
+                                                                <div class="icon icon-a">
+                                                                        <i class="bi bi-heart-pulse"></i>
+                                                                </div>
+                                                                <h5>Hypertension Research</h5>
+                                                                <p class="small">Toolkit A</p>
+                                                        </div>
+                                                </a>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                                <a class="card-link" href="toolkit-b/">
+                                                        <div class="glassy app-card p-4">
+                                                                <div class="icon icon-b">
+                                                                        <i class="bi bi-people"></i>
+                                                                </div>
+                                                                <h5>Co-Design & Adaptation</h5>
+                                                                <p class="small">Toolkit B</p>
+                                                        </div>
+                                                </a>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+                <small>&copy; <span id="year"></span> UHAS Digital Solutions</small>
+        </footer>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+        <script src="app.js"></script>
+</body>
+</html>

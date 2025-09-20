@@ -1,0 +1,479 @@
+/* Toolkit B - Co-Design and Platform Adaptation Styles */
+/* Based on Toolkit A's glass morphism theme */
+
+/* Import base styles from toolkit-a */
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --primary-gradient: linear-gradient(135deg, #e94435 0%, #f89b1b 60%, #d72c18 100%);
+    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --success-gradient: linear-gradient(135deg, #43a047 0%, #66bb6a 100%);
+    --danger-gradient: linear-gradient(135deg, #d72c18 0%, #e94435 100%);
+    --info-gradient: linear-gradient(135deg, #29b6f6 0%, #1e88e5 100%);
+    /* Theme background colors (set dynamically) - default to warm */
+    --bg-start: #f89b1b; /* Orange/Amber */
+    --bg-end: #d72c18;   /* Crimson Red */
+    /* Accent and text colors */
+    --accent-color: #f89b1b;
+    --text-color: #ffffff;
+    --muted-text-color: rgba(255, 255, 255, 0.8);
+}
+
+body {
+    background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Light/Dark mode toggles via data attributes */
+body[data-mode="light"] {
+    --text-color: #111111;
+    --muted-text-color: rgba(0, 0, 0, 0.65);
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --glass-border: rgba(0, 0, 0, 0.08);
+}
+body[data-mode="dark"] {
+    --text-color: #ffffff;
+    --muted-text-color: rgba(255, 255, 255, 0.8);
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+/* Glass morphism cards */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+}
+
+/* Navigation */
+.nav-container {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-pills .nav-link {
+    border-radius: 15px;
+    margin: 0 5px;
+    transition: all 0.3s ease;
+    color: var(--muted-text-color);
+    border: 1px solid transparent;
+}
+
+.nav-pills .nav-link.active {
+    background: var(--primary-gradient);
+    color: white;
+    box-shadow: 0 4px 15px rgba(233, 68, 53, 0.4);
+}
+
+.nav-pills .nav-link:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--glass-border);
+}
+
+/* Buttons */
+.btn-gradient {
+    border: none;
+    border-radius: 15px;
+    padding: 12px 24px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary { background: var(--primary-gradient); }
+.btn-success { background: var(--success-gradient); }
+.btn-danger { background: var(--danger-gradient); }
+.btn-info { background: var(--info-gradient); }
+
+.btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Form elements */
+.form-control, .form-select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--text-color);
+    backdrop-filter: blur(10px);
+}
+
+.form-control:focus, .form-select:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(102, 126, 234, 0.6);
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    color: var(--text-color);
+}
+
+.form-control::placeholder { color: var(--muted-text-color); }
+
+.form-label {
+    color: var(--text-color);
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+/* Dashboard metrics */
+.metric-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    transition: all 0.3s ease;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(31, 38, 135, 0.5);
+}
+
+.metric-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 8px;
+}
+
+.metric-label {
+    color: var(--muted-text-color);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Checklist Styles */
+.checklist-section {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.checklist-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+.checklist-header h5 {
+    margin: 0;
+    color: var(--text-color);
+}
+
+.checklist-progress {
+    margin-left: auto;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 5px 15px;
+    color: var(--muted-text-color);
+    font-size: 0.85rem;
+}
+
+.checklist-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
+}
+
+.checklist-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.checklist-checkbox {
+    margin-right: 15px;
+    margin-top: 3px;
+}
+
+.checklist-content {
+    flex: 1;
+}
+
+.checklist-task {
+    color: var(--text-color);
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.checklist-details {
+    color: var(--muted-text-color);
+    font-size: 0.9rem;
+}
+
+.checklist-meta {
+    display: flex;
+    gap: 15px;
+    margin-top: 8px;
+}
+
+.checklist-meta input, .checklist-meta select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 5px 10px;
+    color: var(--text-color);
+    font-size: 0.85rem;
+}
+
+/* Activity Templates */
+.activity-form {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.participant-entry {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.treatment-option {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+.treatment-option:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateX(5px);
+}
+
+.preference-matrix {
+    display: grid;
+    grid-template-columns: 200px repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.matrix-header {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.matrix-cell {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    color: var(--text-color);
+}
+
+/* Feedback Forms */
+.feedback-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.rating-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.rating-scale {
+    display: flex;
+    gap: 10px;
+}
+
+.rating-option {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--text-color);
+    font-weight: bold;
+}
+
+.rating-option:hover, .rating-option.selected {
+    background: var(--primary-gradient);
+    border-color: #fff;
+    transform: scale(1.1);
+}
+
+/* Status badges */
+.status-badge {
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-planned {
+    background: rgba(33, 150, 243, 0.3);
+    color: #1976d2;
+    border: 1px solid rgba(33, 150, 243, 0.6);
+}
+
+.status-in-progress {
+    background: rgba(255, 193, 7, 0.3);
+    color: #f57c00;
+    border: 1px solid rgba(255, 193, 7, 0.6);
+}
+
+.status-completed {
+    background: rgba(76, 175, 80, 0.3);
+    color: #388e3c;
+    border: 1px solid rgba(76, 175, 80, 0.6);
+}
+
+/* Dark table theme for readability */
+table {
+    color: var(--text-color) !important;
+}
+table thead th {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #fff !important;
+}
+table tbody td {
+    background: transparent !important;
+    color: var(--text-color) !important;
+}
+
+.status-to-do {
+    background: rgba(158, 158, 158, 0.3);
+    color: #616161;
+    border: 1px solid rgba(158, 158, 158, 0.6);
+}
+
+/* Platform customization tables */
+.customization-table {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.customization-table table {
+    margin: 0;
+}
+
+.customization-table th {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    padding: 15px;
+}
+
+.customization-table td {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    padding: 12px;
+    color: var(--text-color);
+}
+
+.customization-table tbody tr:hover td {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .metric-card { margin-bottom: 15px; }
+    .nav-pills { flex-wrap: wrap; gap: 5px; }
+    .nav-pills .nav-link { font-size: 0.8rem; padding: 8px 12px; }
+    
+    .preference-matrix {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+    
+    .matrix-header, .matrix-cell {
+        text-align: left;
+    }
+    
+    .rating-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+/* Hide sections by default */
+.content-section { display: none; }
+.content-section.active { display: block; }
+
+/* Utility classes */
+.text-primary { color: var(--accent-color) !important; }
+.text-white { color: var(--text-color) !important; }
+.text-white-50 { color: var(--muted-text-color) !important; }
+
+/* Animation for progress indicators */
+.progress-ring {
+    width: 60px;
+    height: 60px;
+}
+
+.progress-ring-circle {
+    fill: transparent;
+    stroke: var(--primary-gradient);
+    stroke-width: 4;
+    stroke-dasharray: 188.5;
+    stroke-dashoffset: 188.5;
+    transition: stroke-dashoffset 0.5s ease;
+}
+
+/* Facilitator reminders */
+.reminder-card {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.2) 0%, rgba(255, 152, 0, 0.2) 100%);
+    border-left: 4px solid #ffc107;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.tip-card {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.2) 0%, rgba(139, 195, 74, 0.2) 100%);
+    border-left: 4px solid #4caf50;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.warning-card {
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.2) 0%, rgba(233, 30, 99, 0.2) 100%);
+    border-left: 4px solid #f44336;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+}

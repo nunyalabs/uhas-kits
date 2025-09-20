@@ -1,0 +1,27 @@
+{
+  "name": "UHAS Research Toolkits",
+  "short_name": "UHAS Kits",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#101322",
+  "theme_color": "#f89b1b",
+  "icons": [
+    { "src": "assets/uhas.jpg", "sizes": "192x192", "type": "image/jpeg" },
+    { "src": "assets/uhas.jpg", "sizes": "512x512", "type": "image/jpeg" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Hypertension Research",
+      "short_name": "Toolkit A",
+  "url": "toolkit-a/index.html",
+  "icons": [ { "src": "assets/hpi.png", "sizes": "192x192", "type": "image/png" } ]
+    },
+      {
+        "name": "Co-Design & Adaptation",
+        "short_name": "Toolkit B",
+        "url": "toolkit-b/index.html",
+        "icons": [ { "src": "assets/kits-icon.svg", "sizes": "192x192", "type": "image/svg+xml" } ]
+      }
+  ]
+}

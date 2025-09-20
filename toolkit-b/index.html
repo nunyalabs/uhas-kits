@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Co-Design & Platform Adaptation Toolkit</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="../manifest.json">
+    <link rel="apple-touch-icon" href="../assets/kits-icon.svg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#764ba2">
+    <style>
+      .portal-fab{
+        position: fixed; left: 16px; bottom: 16px; z-index: 1050;
+        display:inline-flex; align-items:center; gap:.4rem;
+        padding:10px 14px; border-radius:999px;
+        color:#fff; background:rgba(255,255,255,.12);
+        border:1px solid rgba(255,255,255,.22);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 6px 18px rgba(0,0,0,.25);
+        text-decoration:none;
+      }
+      .portal-fab:hover{ background:rgba(255,255,255,.22); text-decoration:none; }
+      .portal-fab .bi{ font-size:1.1rem; }
+      @media (min-width: 768px){ .portal-fab{ left:24px; bottom:24px; } }
+    </style>
+</head>
+<body>
+    <div class="nav-container">
+        <div class="container-fluid py-3">
+            <ul class="nav nav-pills justify-content-center" id="mainNav">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" data-section="dashboard">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="planning">
+                        <i class="bi bi-clipboard-check"></i> Planning
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="facilitation">
+                        <i class="bi bi-person-video2"></i> Facilitation
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="activities">
+                        <i class="bi bi-clipboard-data"></i> Trial Setup
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="feedback">
+                        <i class="bi bi-chat-square-dots"></i> Feedback
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="customization">
+                        <i class="bi bi-gear"></i> Customization
+                    </a>
+                </li>
+                <li class="nav-item dropdown ms-2">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-palette"></i> Theme
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#" data-theme="warm">Warm</a></li>
+                        <li><a class="dropdown-item" href="#" data-theme="medium-sky">Medium Sky Blue</a></li>
+                        <li><a class="dropdown-item" href="#" data-theme="deep-blue">Deep Blue</a></li>
+                        <li><a class="dropdown-item" href="#" data-theme="cyan">Cyan Blue</a></li>
+                        <li><a class="dropdown-item" href="#" data-theme="leaf-green">Leaf Green</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" data-mode="light">Light Mode</a></li>
+                        <li><a class="dropdown-item" href="#" data-mode="dark">Dark Mode</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container-fluid py-4">
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="content-section active">
+            <div class="row mb-4">
+                <div class="col-12 text-center mb-4">
+                    <h2 class="text-white fw-bold">Co-Design Workshop Dashboard</h2>
+                    <p class="text-white-50">Digital N-of-1 Trial Platform Adaptation for Ghana</p>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="metric-card">
+                        <div class="metric-number" id="totalWorkshops">0</div>
+                        <div class="metric-label">Workshops Planned</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="metric-card">
+                        <div class="metric-number" id="completedActivities">0</div>
+                        <div class="metric-label">Activities Completed</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="metric-card">
+                        <div class="metric-number" id="feedbackCollected">0</div>
+                        <div class="metric-label">Feedback Forms</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="metric-card">
+                        <div class="metric-number" id="customizations">0</div>
+                        <div class="metric-label">Platform Changes</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-md-6 mb-3">
+                    <div class="glass-card p-4">
+                        <h5 class="text-white mb-3">
+                            <i class="bi bi-people text-primary"></i> Workshop Progress
+                        </h5>
+                        <div class="row text-center">
+                            <div class="col-6 col-md-6">
+                                <div class="text-white-50 small">Planning Complete</div>
+                                <div class="text-white fw-bold" id="planningProgress">0%</div>
+                            </div>
+                            <div class="col-6 col-md-6">
+                                <div class="text-white-50 small">Sessions Conducted</div>
+                                <div class="text-white fw-bold" id="sessionsCount">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 mb-3">
+                    <div class="glass-card p-4">
+                        <h5 class="text-white mb-3">
+                            <i class="bi bi-download text-success"></i> Quick Actions
+                        </h5>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-gradient btn-success" onclick="exportWorkshopData()">
+                                <i class="bi bi-file-earmark-excel"></i> Export Workshop Data
+                            </button>
+                            <button class="btn btn-gradient btn-primary" onclick="generateReport()">
+                                <i class="bi bi-file-text"></i> Generate Report
+                            </button>
+                            <button class="btn btn-gradient btn-danger" onclick="exportCustomizations()">
+                                <i class="bi bi-gear"></i> Export Customizations
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Planning & Preparation Section -->
+        <div id="planning" class="content-section">
+            <div class="row">
+                <div class="col-12">
+                    <div class="glass-card p-4">
+                        <h4 class="text-white mb-4">
+                            <i class="bi bi-clipboard-check text-primary"></i> Planning & Preparation Checklist
+                        </h4>
+                        
+                        <div class="alert alert-info border-0 glass-card mb-4">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Use this checklist to ensure all workshop preparations are complete before conducting co-design sessions.
+                        </div>
+
+                        <!-- Checklist sections will be added here -->
+                        <div id="checklistContainer">
+                            <!-- Dynamic checklist content -->
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button class="btn btn-gradient btn-primary" onclick="saveChecklist()">
+                                <i class="bi bi-save"></i> Save Progress
+                            </button>
+                            <button class="btn btn-gradient btn-success" onclick="exportChecklist()">
+                                <i class="bi bi-download"></i> Export Checklist
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workshop Facilitation Section -->
+        <div id="facilitation" class="content-section">
+            <div class="row">
+                <div class="col-12">
+                    <div class="glass-card p-4">
+                        <h4 class="text-white mb-4">
+                            <i class="bi bi-person-video2 text-primary"></i> Workshop Facilitation Guide
+                        </h4>
+
+                        <ul class="nav nav-pills mb-4" id="facilitationTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="session-flow-tab" data-bs-toggle="pill" data-bs-target="#sessionFlow" type="button" role="tab">Session Flow</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="script-tab" data-bs-toggle="pill" data-bs-target="#scriptOutlines" type="button" role="tab">Script Outlines</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="reminders-tab" data-bs-toggle="pill" data-bs-target="#facilitatorReminders" type="button" role="tab">Reminders</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="live-session-tab" data-bs-toggle="pill" data-bs-target="#liveSession" type="button" role="tab">Live Session</button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="sessionFlow" role="tabpanel">
+                                <!-- Session flow content -->
+                            </div>
+                            <div class="tab-pane fade" id="scriptOutlines" role="tabpanel">
+                                <!-- Script outlines content -->
+                            </div>
+                            <div class="tab-pane fade" id="facilitatorReminders" role="tabpanel">
+                                <!-- Facilitator reminders content -->
+                            </div>
+                            <div class="tab-pane fade" id="liveSession" role="tabpanel">
+                                <!-- Live session management -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workshop Activities Section -->
+        <div id="activities" class="content-section">
+            <div class="row">
+                <div class="col-12">
+                    <div class="glass-card p-4">
+                        <h4 class="text-white mb-4">
+                            <i class="bi bi-diagram-3 text-primary"></i> Workshop Activity Templates
+                        </h4>
+
+                        <ul class="nav nav-pills mb-4" id="activitiesTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="trial-setup-tab" data-bs-toggle="pill" data-bs-target="#trialSetup" type="button" role="tab">N-of-1 Trial Setup</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="summary-tab" data-bs-toggle="pill" data-bs-target="#summaryTable" type="button" role="tab">Summary</button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="trialSetup" role="tabpanel">
+                                <!-- Unified trial setup (goals + mapping + design + schedule) -->
+                            </div>
+                            <div class="tab-pane fade" id="summaryTable" role="tabpanel">
+                                <!-- Summary table -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- App Interface Feedback Section -->
+        <div id="feedback" class="content-section">
+            <div class="row">
+                <div class="col-12">
+                    <div class="glass-card p-4">
+                        <h4 class="text-white mb-4">
+                            <i class="bi bi-chat-square-dots text-primary"></i> App Interface Feedback
+                        </h4>
+
+                        <ul class="nav nav-pills mb-4" id="feedbackTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="usability-tab" data-bs-toggle="pill" data-bs-target="#usabilityFeedback" type="button" role="tab">Usability Testing</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="pain-points-tab" data-bs-toggle="pill" data-bs-target="#painPoints" type="button" role="tab">Pain Points</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="workshop-feedback-tab" data-bs-toggle="pill" data-bs-target="#workshopFeedback" type="button" role="tab">Workshop Feedback</button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="usabilityFeedback" role="tabpanel">
+                                <!-- Usability feedback forms -->
+                            </div>
+                            <div class="tab-pane fade" id="painPoints" role="tabpanel">
+                                <!-- Pain points tracking -->
+                            </div>
+                            <div class="tab-pane fade" id="workshopFeedback" role="tabpanel">
+                                <!-- Workshop feedback forms -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Platform Customization Section -->
+        <div id="customization" class="content-section">
+            <div class="row">
+                <div class="col-12">
+                    <div class="glass-card p-4">
+                        <h4 class="text-white mb-4">
+                            <i class="bi bi-gear text-primary"></i> Platform Customization Tools
+                        </h4>
+
+                        <ul class="nav nav-pills mb-4" id="customizationTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="feature-tracker-tab" data-bs-toggle="pill" data-bs-target="#featureTracker" type="button" role="tab">Feature Tracker</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="ui-feedback-tab" data-bs-toggle="pill" data-bs-target="#uiFeedbackSummary" type="button" role="tab">UI Feedback</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="design-log-tab" data-bs-toggle="pill" data-bs-target="#designLog" type="button" role="tab">Design Log</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="usability-testing-tab" data-bs-toggle="pill" data-bs-target="#usabilityTesting" type="button" role="tab">Testing Guide</button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="featureTracker" role="tabpanel">
+                                <!-- Feature adaptation tracker -->
+                            </div>
+                            <div class="tab-pane fade" id="uiFeedbackSummary" role="tabpanel">
+                                <!-- UI feedback summary -->
+                            </div>
+                            <div class="tab-pane fade" id="designLog" role="tabpanel">
+                                <!-- Design decision log -->
+                            </div>
+                            <div class="tab-pane fade" id="usabilityTesting" role="tabpanel">
+                                <!-- Usability testing guide -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Floating Back-to-Portal button -->
+    <a href="../" class="portal-fab" aria-label="Back to Portal">
+      <i class="bi bi-house"></i>
+      <span class="d-none d-sm-inline">Portal</span>
+    </a>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <!-- Load feature modules before main to expose initializers globally -->
+    <script src="js/checklist.js"></script>
+    <script src="js/facilitation.js"></script>
+    <script src="js/activities.js"></script>
+    <script src="js/feedback.js"></script>
+    <script src="js/customization.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

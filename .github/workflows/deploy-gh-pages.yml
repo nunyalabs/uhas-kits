@@ -1,0 +1,77 @@
+name: Deploy Toolkits to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source repo
+        uses: actions/checkout@v4
+
+      - name: Build site structure
+        run: |
+          set -euo pipefail
+          rm -rf dist && mkdir -p dist
+          
+          # Copy portal root files
+          cp index.html dist/index.html
+          cp app.js dist/app.js
+          cp sw.js dist/sw.js
+          cp manifest.json dist/manifest.json
+          [ -f favicon.ico ] && cp favicon.ico dist/favicon.ico || true
+          [ -d assets ] && cp -r assets dist/assets || true
+          
+          # Copy toolkits
+          cp -r toolkit-a dist/toolkit-a
+          cp -r toolkit-b dist/toolkit-b
+          
+          # Add GitHub Pages config
+          echo "<!doctype html><title>Not found</title><h1>Not found</h1><p>Return to <a href='.'>home</a>." > dist/404.html
+          touch dist/.nojekyll
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Minify assets
+        run: |
+          set -euo pipefail
+          
+          # Minify JavaScript files
+          find dist -type f -name "*.js" -exec npx --yes terser@5.21.0 {} -c -m -o {} \;
+          
+          # Minify CSS files
+          find dist -type f -name "*.css" -exec npx --yes csso-cli@5.0.5 {} --output {} \;
+          
+          # Minify HTML files
+          find dist -type f -name "*.html" -exec npx --yes html-minifier-terser@7.2.0 \
+            --collapse-whitespace --remove-comments --minify-css --minify-js -o {} {} \;
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
