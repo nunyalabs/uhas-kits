@@ -1,4 +1,4 @@
-name: Deploy Minified Toolkits to GitHub Pages
+name: Deploy UHAS Toolkits to GitHub Pages
 
 on:
   push:
@@ -10,11 +10,19 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
     steps:
-      - name: Checkout source repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -26,63 +34,80 @@ jobs:
         run: |
           set -euo pipefail
           
-          # Create clean dist directory
+          # Create clean build directory
           rm -rf dist && mkdir -p dist
           
-          # Copy and minify portal root files
+          # Copy and minify portal index
           npx --yes html-minifier-terser@7.2.0 \
             --collapse-whitespace --remove-comments --minify-css --minify-js \
             -o dist/index.html index.html
           
+          # Minify portal JavaScript files
           npx --yes terser@5.21.0 app.js -c -m -o dist/app.js
           npx --yes terser@5.21.0 sw.js -c -m -o dist/sw.js
           
-          # Copy manifest and assets (no minification needed)
-          cp manifest.json dist/manifest.json
-          [ -f favicon.ico ] && cp favicon.ico dist/favicon.ico || true
-          [ -d assets ] && cp -r assets dist/assets || true
+          # Copy manifest and assets
+          cp manifest.json dist/
+          [ -d assets ] && cp -r assets dist/ || true
           
           # Process toolkit-a
-          mkdir -p dist/toolkit-a/js
-          npx --yes html-minifier-terser@7.2.0 \
-            --collapse-whitespace --remove-comments --minify-css --minify-js \
-            -o dist/toolkit-a/index.html toolkit-a/index.html
-          npx --yes terser@5.21.0 toolkit-a/app.js -c -m -o dist/toolkit-a/app.js
-          npx --yes csso-cli@5.0.5 toolkit-a/style.css --output dist/toolkit-a/style.css
-          
-          # Minify toolkit-a JS files
-          for jsfile in toolkit-a/js/*.js; do
-            [ -f "$jsfile" ] && npx --yes terser@5.21.0 "$jsfile" -c -m -o "dist/${jsfile}"
-          done
+          if [ -d toolkit-a ]; then
+            mkdir -p dist/toolkit-a/js
+            
+            # Minify toolkit-a files
+            npx --yes html-minifier-terser@7.2.0 \
+              --collapse-whitespace --remove-comments --minify-css --minify-js \
+              -o dist/toolkit-a/index.html toolkit-a/index.html
+            
+            npx --yes terser@5.21.0 toolkit-a/app.js -c -m -o dist/toolkit-a/app.js
+            npx --yes csso-cli@5.0.5 toolkit-a/style.css --output dist/toolkit-a/style.css
+            
+            # Minify JavaScript files
+            for jsfile in toolkit-a/js/*.js; do
+              if [ -f "$jsfile" ]; then
+                npx --yes terser@5.21.0 "$jsfile" -c -m -o "dist/${jsfile}"
+              fi
+            done
+          fi
           
           # Process toolkit-b
-          mkdir -p dist/toolkit-b/js
-          npx --yes html-minifier-terser@7.2.0 \
-            --collapse-whitespace --remove-comments --minify-css --minify-js \
-            -o dist/toolkit-b/index.html toolkit-b/index.html
-          npx --yes terser@5.21.0 toolkit-b/app.js -c -m -o dist/toolkit-b/app.js
-          npx --yes csso-cli@5.0.5 toolkit-b/style.css --output dist/toolkit-b/style.css
+          if [ -d toolkit-b ]; then
+            mkdir -p dist/toolkit-b/js
+            
+            # Minify toolkit-b files
+            npx --yes html-minifier-terser@7.2.0 \
+              --collapse-whitespace --remove-comments --minify-css --minify-js \
+              -o dist/toolkit-b/index.html toolkit-b/index.html
+            
+            npx --yes terser@5.21.0 toolkit-b/app.js -c -m -o dist/toolkit-b/app.js
+            npx --yes csso-cli@5.0.5 toolkit-b/style.css --output dist/toolkit-b/style.css
+            
+            # Minify JavaScript files
+            for jsfile in toolkit-b/js/*.js; do
+              if [ -f "$jsfile" ]; then
+                npx --yes terser@5.21.0 "$jsfile" -c -m -o "dist/${jsfile}"
+              fi
+            done
+          fi
           
-          # Minify toolkit-b JS files
-          for jsfile in toolkit-b/js/*.js; do
-            [ -f "$jsfile" ] && npx --yes terser@5.21.0 "$jsfile" -c -m -o "dist/${jsfile}"
-          done
-          
-          # Add GitHub Pages configuration
-          echo "          echo "<!doctype html><title>Not found</title><h1>Not found</h1><p>Return to <a href='.'>home</a>." > dist/404.html
-          touch dist/.nojekyll" > dist/404.html
+          # Create GitHub Pages files
+          echo "<!DOCTYPE html><html><head><title>Page Not Found</title></head><body><h1>404 - Page Not Found</h1><p><a href=\"/uhas-kits/\">Return to UHAS Toolkits</a></p></body></html>" > dist/404.html
           touch dist/.nojekyll
           
-          # Create robots.txt to prevent source file indexing
+          # Create robots.txt
           cat > dist/robots.txt << 'ROBOTS_EOF'
           User-agent: *
           Allow: /
           
-          # Only allow access to minified production files
+          # Prevent indexing of source files
           Disallow: /src/
           Disallow: /*.ts
           Disallow: /*.scss
           ROBOTS_EOF
+          
+          # List built files for verification
+          echo "Built files:"
+          find dist -type f | sort
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -90,7 +115,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: ./dist
 
       - name: Deploy to GitHub Pages
         id: deployment
