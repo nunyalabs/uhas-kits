@@ -73,7 +73,7 @@ jobs:
           touch dist/.nojekyll
           
           # Create robots.txt to prevent source file indexing
-          cat > dist/robots.txt << 'EOF'
+          cat > dist/robots.txt << 'ROBOTS_EOF'
           User-agent: *
           Allow: /
           
@@ -81,7 +81,7 @@ jobs:
           Disallow: /src/
           Disallow: /*.ts
           Disallow: /*.scss
-          EOF
+          ROBOTS_EOF
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -94,5 +94,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          artifact_name: github-pages
