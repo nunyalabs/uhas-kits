@@ -1,4 +1,4 @@
-name: Deploy Toolkits to GitHub Pages
+name: Deploy Minified Toolkits to GitHub Pages
 
 on:
   push:
@@ -11,51 +11,77 @@ permissions:
   id-token: write
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source repo
         uses: actions/checkout@v4
-
-      - name: Build site structure
-        run: |
-          set -euo pipefail
-          rm -rf dist && mkdir -p dist
-          
-          # Copy portal root files
-          cp index.html dist/index.html
-          cp app.js dist/app.js
-          cp sw.js dist/sw.js
-          cp manifest.json dist/manifest.json
-          [ -f favicon.ico ] && cp favicon.ico dist/favicon.ico || true
-          [ -d assets ] && cp -r assets dist/assets || true
-          
-          # Copy toolkits
-          cp -r toolkit-a dist/toolkit-a
-          cp -r toolkit-b dist/toolkit-b
-          
-          # Add GitHub Pages config
-          echo "<!doctype html><title>Not found</title><h1>Not found</h1><p>Return to <a href='.'>home</a>." > dist/404.html
-          touch dist/.nojekyll
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Minify assets
+      - name: Build and minify site
         run: |
           set -euo pipefail
           
-          # Minify JavaScript files
-          find dist -type f -name "*.js" -exec npx --yes terser@5.21.0 {} -c -m -o {} \;
+          # Create clean dist directory
+          rm -rf dist && mkdir -p dist
           
-          # Minify CSS files
-          find dist -type f -name "*.css" -exec npx --yes csso-cli@5.0.5 {} --output {} \;
+          # Copy and minify portal root files
+          npx --yes html-minifier-terser@7.2.0 \
+            --collapse-whitespace --remove-comments --minify-css --minify-js \
+            -o dist/index.html index.html
           
-          # Minify HTML files
-          find dist -type f -name "*.html" -exec npx --yes html-minifier-terser@7.2.0 \
-            --collapse-whitespace --remove-comments --minify-css --minify-js -o {} {} \;
+          npx --yes terser@5.21.0 app.js -c -m -o dist/app.js
+          npx --yes terser@5.21.0 sw.js -c -m -o dist/sw.js
+          
+          # Copy manifest and assets (no minification needed)
+          cp manifest.json dist/manifest.json
+          [ -f favicon.ico ] && cp favicon.ico dist/favicon.ico || true
+          [ -d assets ] && cp -r assets dist/assets || true
+          
+          # Process toolkit-a
+          mkdir -p dist/toolkit-a/js
+          npx --yes html-minifier-terser@7.2.0 \
+            --collapse-whitespace --remove-comments --minify-css --minify-js \
+            -o dist/toolkit-a/index.html toolkit-a/index.html
+          npx --yes terser@5.21.0 toolkit-a/app.js -c -m -o dist/toolkit-a/app.js
+          npx --yes csso-cli@5.0.5 toolkit-a/style.css --output dist/toolkit-a/style.css
+          
+          # Minify toolkit-a JS files
+          for jsfile in toolkit-a/js/*.js; do
+            [ -f "$jsfile" ] && npx --yes terser@5.21.0 "$jsfile" -c -m -o "dist/${jsfile}"
+          done
+          
+          # Process toolkit-b
+          mkdir -p dist/toolkit-b/js
+          npx --yes html-minifier-terser@7.2.0 \
+            --collapse-whitespace --remove-comments --minify-css --minify-js \
+            -o dist/toolkit-b/index.html toolkit-b/index.html
+          npx --yes terser@5.21.0 toolkit-b/app.js -c -m -o dist/toolkit-b/app.js
+          npx --yes csso-cli@5.0.5 toolkit-b/style.css --output dist/toolkit-b/style.css
+          
+          # Minify toolkit-b JS files
+          for jsfile in toolkit-b/js/*.js; do
+            [ -f "$jsfile" ] && npx --yes terser@5.21.0 "$jsfile" -c -m -o "dist/${jsfile}"
+          done
+          
+          # Add GitHub Pages configuration
+          echo "<!doctype html><title>Not found</title><h1>Not found</h1><p>Return to <a href='.'>home</a>." > dist/404.html
+          touch dist/.nojekyll
+          
+          # Create robots.txt to prevent source file indexing
+          cat > dist/robots.txt << 'EOF'
+          User-agent: *
+          Allow: /
+          
+          # Only allow access to minified production files
+          Disallow: /src/
+          Disallow: /*.ts
+          Disallow: /*.scss
+          EOF
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -65,13 +91,8 @@ jobs:
         with:
           path: dist
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
