@@ -69,7 +69,8 @@ jobs:
           done
           
           # Add GitHub Pages configuration
-          echo "<!doctype html><title>Not found</title><h1>Not found</h1><p>Return to <a href='.'>home</a>." > dist/404.html
+          echo "          echo "<!doctype html><title>Not found</title><h1>Not found</h1><p>Return to <a href='.'>home</a>." > dist/404.html
+          touch dist/.nojekyll" > dist/404.html
           touch dist/.nojekyll
           
           # Create robots.txt to prevent source file indexing
