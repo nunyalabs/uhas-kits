@@ -1,0 +1,84 @@
+name: Deploy UHAS Toolkits to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build site
+        run: |
+          # Create build directory
+          mkdir -p dist
+          
+          # Copy all files to dist
+          cp -r * dist/ 2>/dev/null || true
+          
+          # Remove .github from dist to avoid recursion
+          rm -rf dist/.github
+          rm -rf dist/dist
+          
+          # Ensure we have the basic files
+          cp index.html dist/
+          cp app.js dist/
+          cp sw.js dist/
+          cp manifest.json dist/
+          
+          # Copy assets and toolkits
+          [ -d assets ] && cp -r assets dist/
+          [ -d toolkit-a ] && cp -r toolkit-a dist/
+          [ -d toolkit-b ] && cp -r toolkit-b dist/
+          
+          # Add 404 page and Jekyll bypass
+          echo '<!DOCTYPE html><html><head><title>404</title></head><body><h1>Page Not Found</h1><a href="/uhas-kits/">Return Home</a></body></html>' > dist/404.html
+          touch dist/.nojekyll
+
+      - name: Minify files
+        run: |
+          # Install minification tools
+          npm install -g terser csso-cli html-minifier-terser
+          
+          # Minify JS files
+          find dist -name "*.js" -type f -exec terser {} --compress --mangle --output {} \;
+          
+          # Minify CSS files  
+          find dist -name "*.css" -type f -exec csso {} --output {} \;
+          
+          # Minify HTML files
+          find dist -name "*.html" -type f -exec html-minifier-terser --collapse-whitespace --remove-comments --minify-css --minify-js --input-dir . --output-dir . --file-ext html {} --output {} \;
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload to Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
