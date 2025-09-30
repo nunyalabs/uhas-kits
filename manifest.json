@@ -7,8 +7,8 @@
   "background_color": "#101322",
   "theme_color": "#f89b1b",
   "icons": [
-    { "src": "assets/uhas.jpg", "sizes": "192x192", "type": "image/jpeg" },
-    { "src": "assets/uhas.jpg", "sizes": "512x512", "type": "image/jpeg" }
+    { "src": "assets/kits-icon.svg", "sizes": "192x192", "type": "image/svg+xml" },
+    { "src": "assets/kits-icon.svg", "sizes": "512x512", "type": "image/svg+xml" }
   ],
   "shortcuts": [
     {
